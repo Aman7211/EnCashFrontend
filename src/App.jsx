@@ -1,29 +1,30 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Register';
-import AdminDashboard from './components/Admin/AdminDashboard';
-import UserDashboard from './components/User/UserDashboard';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import UserLogin from './pages/user/Login';
+import VerifyOtp from './pages/user/VerifyOtp';
+import Onboard from './pages/user/Onboard';
+import UserDashboard from './pages/user/Dashboard';
+import AdminLogin from './pages/admin/Login';
+import AdminDashboard from './pages/admin/Dashboard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function App() {
-  const { user } = useAuth();
-
+function App() {
   return (
-    <>
-    <Header/>
-    <Router>
+    <BrowserRouter>
+      <ToastContainer />
       <Routes>
-        <Route path="/" element={user ? <Navigate to={user.role === 'admin' ? '/admin' : '/user'} /> : <Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/login" />} />
-        <Route path="/user" element={user?.role === 'user' ? <UserDashboard /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* USER */}
+        <Route path="/" element={<UserLogin />} />
+        <Route path="/verify" element={<VerifyOtp />} />
+        <Route path="/onboard" element={<Onboard />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
+
+        {/* ADMIN */}
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
-    </Router>
-    <Footer/>
-    </>
+    </BrowserRouter>
   );
 }
+
+export default App;
