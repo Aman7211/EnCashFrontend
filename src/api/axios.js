@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://encashbackend.onrender.com/',
+  baseURL: 'https://encashbackend.onrender.com/api',
 });
 
 instance.interceptors.request.use((config) => {
