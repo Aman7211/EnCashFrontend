@@ -1,207 +1,251 @@
-// import { useState } from 'react';
-// import { 
-//   Menu, X, Search, Bell, User, Settings, LogOut, 
-//   Home, Users, BarChart3, Shield, HelpCircle,
-//   Github, Twitter, Linkedin, Mail, Phone, MapPin,
-//   ChevronDown, Sparkles, Zap
-// } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, X, Wallet, LogOut, User, Home, CreditCard, BarChart3, Settings, Bell } from 'lucide-react';
 
-// function Header() {
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
-//   const [isProfileOpen, setIsProfileOpen] = useState(false);
-//   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const token = localStorage.getItem('token');
+  // In your actual app, use: const token = localStorage.getItem('token');
+  const [user] = useState({ name: 'John Doe', email: 'john@example.com' });
 
-//   const notifications = [
-//     { id: 1, title: "New user registered", time: "2 min ago", type: "info" },
-//     { id: 2, title: "System update available", time: "1 hour ago", type: "warning" },
-//     { id: 3, title: "Backup completed", time: "3 hours ago", type: "success" }
-//   ];
+  const logout = () => {
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('email');
+    // localStorage.removeItem('isNewUser');
+    // navigate('/');
+    alert('Logout functionality - implement with your routing solution');
+  };
 
-//   return (
-//     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-white/10 border-b border-white/20 shadow-xl">
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//         <div className="flex items-center justify-between h-16">
-//           {/* Logo */}
-//           <div className="flex items-center space-x-3">
-//             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-xl shadow-lg">
-//               <Zap className="w-6 h-6 text-white" />
-//             </div>
-//             <div className="hidden sm:block">
-//               <h1 className="text-xl font-bold bg-gradient-to-r from-purple-300 to-emerald-300 bg-clip-text text-transparent">
-//                 ModernAuth
-//               </h1>
-//             </div>
-//           </div>
+  const navigate = (path) => {
+    // Replace with your actual navigation logic
+    alert(`Navigate to: ${path}`);
+  };
 
-//           {/* Desktop Navigation */}
-//           <nav className="hidden md:flex items-center space-x-8">
-//             <a href="#" className="flex items-center space-x-2 text-white hover:text-purple-300 transition-colors duration-200 group">
-//               <Home className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-//               <span>Dashboard</span>
-//             </a>
-//             <a href="#" className="flex items-center space-x-2 text-white hover:text-emerald-300 transition-colors duration-200 group">
-//               <Users className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-//               <span>Users</span>
-//             </a>
-//             <a href="#" className="flex items-center space-x-2 text-white hover:text-cyan-300 transition-colors duration-200 group">
-//               <BarChart3 className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-//               <span>Analytics</span>
-//             </a>
-//             <a href="#" className="flex items-center space-x-2 text-white hover:text-pink-300 transition-colors duration-200 group">
-//               <Shield className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-//               <span>Security</span>
-//             </a>
-//           </nav>
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
-//           {/* Search Bar */}
-//           <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
-//             <div className="relative w-full">
-//               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-//               <input
-//                 type="text"
-//                 placeholder="Search..."
-//                 className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
-//               />
-//             </div>
-//           </div>
+  // Navigation items
+  const navItems = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Transactions', href: '/transactions', icon: CreditCard },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { name: 'Settings', href: '/settings', icon: Settings },
+  ];
 
-//           {/* Right Side Actions */}
-//           <div className="flex items-center space-x-4">
-//             {/* Notifications */}
-//             <div className="relative">
-//               <button
-//                 onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-//                 className="relative p-2 text-white hover:text-purple-300 transition-colors duration-200 hover:bg-white/10 rounded-lg"
-//               >
-//                 <Bell className="w-5 h-5" />
-//                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
-//               </button>
-
-//               {/* Notifications Dropdown */}
-//               {isNotificationOpen && (
-//                 <div className="absolute right-0 mt-2 w-80 backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl overflow-hidden">
-//                   <div className="p-4 border-b border-white/10">
-//                     <h3 className="text-white font-semibold">Notifications</h3>
-//                   </div>
-//                   <div className="max-h-64 overflow-y-auto">
-//                     {notifications.map((notification) => (
-//                       <div key={notification.id} className="p-4 hover:bg-white/5 transition-colors duration-200 border-b border-white/5 last:border-b-0">
-//                         <div className="flex items-start space-x-3">
-//                           <div className={`w-2 h-2 rounded-full mt-2 ${
-//                             notification.type === 'success' ? 'bg-green-500' :
-//                             notification.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
-//                           }`}></div>
-//                           <div className="flex-1">
-//                             <p className="text-white text-sm">{notification.title}</p>
-//                             <p className="text-gray-400 text-xs mt-1">{notification.time}</p>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-//               )}
-//             </div>
-
-//             {/* Profile Dropdown */}
-//             <div className="relative">
-//               <button
-//                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-//                 className="flex items-center space-x-2 p-1 text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-//               >
-//                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-full flex items-center justify-center">
-//                   <User className="w-4 h-4 text-white" />
-//                 </div>
-//                 <ChevronDown className="w-4 h-4" />
-//               </button>
-
-//               {/* Profile Dropdown Menu */}
-//               {isProfileOpen && (
-//                 <div className="absolute right-0 mt-2 w-48 backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl overflow-hidden">
-//                   <div className="p-4 border-b border-white/10">
-//                     <p className="text-white font-semibold">John Doe</p>
-//                     <p className="text-gray-400 text-sm">john@example.com</p>
-//                   </div>
-//                   <div className="py-2">
-//                     <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 transition-colors duration-200">
-//                       <User className="w-4 h-4" />
-//                       <span>Profile</span>
-//                     </a>
-//                     <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 transition-colors duration-200">
-//                       <Settings className="w-4 h-4" />
-//                       <span>Settings</span>
-//                     </a>
-//                     <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 transition-colors duration-200">
-//                       <HelpCircle className="w-4 h-4" />
-//                       <span>Help</span>
-//                     </a>
-//                     <hr className="my-2 border-white/10" />
-//                     <a href="#" className="flex items-center space-x-3 px-4 py-2 text-red-400 hover:bg-red-500/10 transition-colors duration-200">
-//                       <LogOut className="w-4 h-4" />
-//                       <span>Sign Out</span>
-//                     </a>
-//                   </div>
-//                 </div>
-//               )}
-//             </div>
-
-//             {/* Mobile Menu Button */}
-//             <button
-//               onClick={() => setIsMenuOpen(!isMenuOpen)}
-//               className="md:hidden p-2 text-white hover:text-purple-300 transition-colors duration-200"
-//             >
-//               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Mobile Navigation */}
-//         {isMenuOpen && (
-//           <div className="md:hidden py-4 border-t border-white/20">
-//             <div className="space-y-2">
-//               <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200">
-//                 <Home className="w-4 h-4" />
-//                 <span>Dashboard</span>
-//               </a>
-//               <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200">
-//                 <Users className="w-4 h-4" />
-//                 <span>Users</span>
-//               </a>
-//               <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200">
-//                 <BarChart3 className="w-4 h-4" />
-//                 <span>Analytics</span>
-//               </a>
-//               <a href="#" className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200">
-//                 <Shield className="w-4 h-4" />
-//                 <span>Security</span>
-//               </a>
-//             </div>
-            
-//             {/* Mobile Search */}
-//             <div className="mt-4 px-4">
-//               <div className="relative">
-//                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-//                 <input
-//                   type="text"
-//                   placeholder="Search..."
-//                   className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
-//                 />
-//               </div>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </header>
-//   );
-// }
-
-// export default Header;
-import React from 'react'
-
-const Header = () => {
   return (
-    <div>Header</div>
-  )
+    <header className="relative">
+      {/* Main Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 lg:h-20">
+            
+            {/* Logo and Title */}
+            <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => navigate('/')}>
+              <div className="bg-white/20 backdrop-blur-sm p-2 rounded-xl group-hover:bg-white/30 transition-all duration-300">
+                <Wallet className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl lg:text-2xl font-bold text-white tracking-tight">
+                  Wallet Dashboard
+                </h1>
+                <p className="text-xs lg:text-sm text-white/80 hidden sm:block">
+                  Manage your finances
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            {token ? (
+            <div className="hidden lg:flex items-center space-x-1">
+              {navItems.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => navigate(item.href)}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white/80 hover:text-white
+                             hover:bg-white/10 transition-all duration-200 text-sm font-medium"
+                  >
+                    <IconComponent className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </button>
+                );
+              })}
+            </div>):''
 }
 
-export default Header
+            {/* Right Side Content */}
+            <div className="flex items-center space-x-4">
+              
+              {/* Conditional rendering based on token */}
+              {token ? (
+                <div className="hidden md:flex items-center space-x-4">
+                  {/* Notifications */}
+                  <button className="relative bg-white/10 backdrop-blur-sm p-2 rounded-full border border-white/20
+                                   hover:bg-white/20 transition-all duration-200">
+                    <Bell className="h-5 w-5 text-white" />
+                    <div className="absolute -top-1 -right-1 bg-red-500 h-3 w-3 rounded-full border-2 border-white"></div>
+                  </button>
+
+                  {/* User Info */}
+                  <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                    <div className="bg-white/20 p-1.5 rounded-full">
+                      <User className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-white">
+                        {user?.name || 'User'}
+                      </p>
+                      <p className="text-xs text-white/70">
+                        {user?.email || 'user@example.com'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Logout Button */}
+                  <button 
+                    onClick={logout}
+                    className="group flex items-center space-x-2 bg-red-500/90 hover:bg-red-500 
+                             backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-medium
+                             border border-red-400/30 hover:border-red-300 
+                             transform hover:scale-105 transition-all duration-200 shadow-lg"
+                  >
+                    <LogOut className="h-4 w-4 group-hover:rotate-12 transition-transform duration-200" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="hidden md:flex items-center space-x-3">
+                  <button 
+                    onClick={() => navigate('/login')}
+                    className="px-4 py-2 text-white/90 hover:text-white font-medium transition-colors duration-200"
+                  >
+                    Sign In
+                  </button>
+                  <button 
+                    onClick={() => navigate('/register')}
+                    className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-full 
+                             text-white font-medium border border-white/30 hover:border-white/50
+                             transition-all duration-200"
+                  >
+                    Get Started
+                  </button>
+                </div>
+              )}
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={toggleMenu}
+                className="md:hidden bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/20
+                         hover:bg-white/20 transition-all duration-200"
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6 text-white" />
+                ) : (
+                  <Menu className="h-6 w-6 text-white" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Animated Bottom Border */}
+        <div className="h-1 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 opacity-70"></div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`md:hidden absolute top-full left-0 right-0 z-50 transform transition-all duration-300 ease-in-out ${
+        isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0 pointer-events-none'
+      }`}>
+        <div className="bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-2xl">
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
+            
+            {/* Mobile Navigation */}
+            <div className="space-y-2">
+              {navItems.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      navigate(item.href);
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 
+                             rounded-lg transition-colors duration-200"
+                  >
+                    <IconComponent className="h-5 w-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Conditional Mobile Content */}
+            {token ? (
+              <>
+                {/* Mobile User Info */}
+                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 rounded-full">
+                    <User className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      {user?.name || 'User'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {user?.email || 'user@example.com'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mobile Logout Button */}
+                <button 
+                  onClick={logout}
+                  className="w-full flex items-center justify-center space-x-2 
+                           bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700
+                           text-white py-3 rounded-xl font-medium
+                           transform hover:scale-105 transition-all duration-200 shadow-lg"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <div className="space-y-3 pt-2 border-t border-gray-200">
+                <button 
+                  onClick={() => {
+                    navigate('/login');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full py-3 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => {
+                    navigate('/register');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
+                           text-white py-3 rounded-xl font-medium
+                           transform hover:scale-105 transition-all duration-200 shadow-lg"
+                >
+                  Get Started
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay for mobile menu */}
+      {isMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+    </header>
+  );
+}
