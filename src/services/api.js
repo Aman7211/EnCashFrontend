@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://encashbackend.onrender.com/api'
-  // baseURL: 'http://localhost:8000/api',
+  // baseURL: 'https://encashbackend.onrender.com/api'
+  baseURL: 'http://localhost:8000/api',
 });
 
 API.interceptors.request.use((req) => {

@@ -1,21 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
-
-// Mock API for demonstration
-const API = {
-  get: async (url) => {
-    // Mock profile response
-    return { data: { name: 'John Doe', wallet: 1250 } };
-  },
-  post: async (url, data) => {
-    // Mock redeem response
-    if (data.code && data.code.length > 5) {
-      const amount = Math.floor(Math.random() * 500) + 100; // Random amount for demo
-      return { data: { message: `₹${amount} credited successfully!` } };
-    }
-    throw new Error('Invalid code');
-  }
-};
+import API from '../../services/api';
 
 // QR Scanner Component
 function QRScanner({ onScan, isActive }) {
@@ -42,11 +27,11 @@ function QRScanner({ onScan, isActive }) {
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { 
+        video: {
           facingMode: 'environment',
           width: { ideal: 640 },
-          height: { ideal: 480 }
-        }
+          height: { ideal: 480 },
+        },
       });
       setStream(mediaStream);
       if (videoRef.current) {
@@ -62,7 +47,7 @@ function QRScanner({ onScan, isActive }) {
 
   const stopCamera = () => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
       setStream(null);
     }
     if (scanIntervalRef.current) {
@@ -82,7 +67,7 @@ function QRScanner({ onScan, isActive }) {
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // For demo purposes, simulate QR detection after 3 seconds
+    // ⚡ Simulate QR detection after 3s
     setTimeout(() => {
       if (scanning) {
         const mockQRData = `QR${Date.now()}${Math.floor(Math.random() * 1000)}`;
@@ -116,19 +101,16 @@ function QRScanner({ onScan, isActive }) {
         muted
       />
       <canvas ref={canvasRef} className="hidden" />
-      
-      {/* Scanning overlay */}
+
+      {/* Overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative">
-          {/* Scanning frame */}
           <div className="w-48 h-48 border-4 border-white rounded-lg relative">
             <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-400"></div>
             <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-400"></div>
             <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-400"></div>
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-400"></div>
           </div>
-          
-          {/* Scanning line animation */}
           <div className="absolute top-0 left-0 w-full h-1 bg-green-400 animate-pulse"></div>
         </div>
       </div>
@@ -147,6 +129,7 @@ export default function Dashboard() {
   const [code, setCode] = useState('');
   const [showScanner, setShowScanner] = useState(false);
 
+  // ✅ Fetch profile from backend
   const fetchProfile = async () => {
     try {
       const res = await API.get('/user/profile');
@@ -156,16 +139,16 @@ export default function Dashboard() {
     }
   };
 
+  // ✅ Redeem with backend
   const redeem = async () => {
     if (!code.trim()) {
       toast.error("Please enter or scan a QR code");
       return;
     }
-
     try {
-      const res = await API.post('/user/redeem', { code });
+      const res = await API.post('/user/redeemQrCode', { code });
       toast.success(res.data.message);
-      setCode(''); // Clear the code
+      setCode('');
       fetchProfile(); // refresh wallet
     } catch (err) {
       toast.error(err.response?.data?.message || "Redeem failed");
@@ -178,9 +161,7 @@ export default function Dashboard() {
     toast.success("QR code scanned successfully!");
   };
 
-  const toggleScanner = () => {
-    setShowScanner(!showScanner);
-  };
+  const toggleScanner = () => setShowScanner(!showScanner);
 
   useEffect(() => {
     fetchProfile();

@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, Wallet, LogOut, User, Home, CreditCard, BarChart3, Settings, Bell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import API from '../../services/api';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const token = localStorage.getItem('token');
-  // In your actual app, use: const token = localStorage.getItem('token');
-  const [user] = useState({ name: 'John Doe', email: 'john@example.com' });
+  const navigate = useNavigate();
+
+  // Fetch user profile if logged in
+  useEffect(() => {
+    if (token) {
+      API.get('/user/profile')
+        .then((res) => setUser(res.data))
+        .catch(() => {
+          localStorage.removeItem('token');
+          navigate('/');
+        });
+    }
+  }, [token, navigate]);
 
   const logout = () => {
-    // localStorage.removeItem('token');
-    // localStorage.removeItem('email');
-    // localStorage.removeItem('isNewUser');
-    // navigate('/');
-    alert('Logout functionality - implement with your routing solution');
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    localStorage.removeItem('isNewUser');
+    navigate('/');
   };
 
-  const navigate = (path) => {
-    // Replace with your actual navigation logic
-    alert(`Navigate to: ${path}`);
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   // Navigation items
   const navItems = [
@@ -71,22 +77,12 @@ export default function Header() {
                   </button>
                 );
               })}
-            </div>):''
-}
+            </div>):null}
 
             {/* Right Side Content */}
             <div className="flex items-center space-x-4">
-              
-              {/* Conditional rendering based on token */}
               {token ? (
                 <div className="hidden md:flex items-center space-x-4">
-                  {/* Notifications */}
-                  <button className="relative bg-white/10 backdrop-blur-sm p-2 rounded-full border border-white/20
-                                   hover:bg-white/20 transition-all duration-200">
-                    <Bell className="h-5 w-5 text-white" />
-                    <div className="absolute -top-1 -right-1 bg-red-500 h-3 w-3 rounded-full border-2 border-white"></div>
-                  </button>
-
                   {/* User Info */}
                   <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
                     <div className="bg-white/20 p-1.5 rounded-full">
@@ -97,12 +93,12 @@ export default function Header() {
                         {user?.name || 'User'}
                       </p>
                       <p className="text-xs text-white/70">
-                        {user?.email || 'user@example.com'}
+                        {user?.email || 'user@gmail.com'}
                       </p>
                     </div>
                   </div>
 
-                  {/* Logout Button */}
+                  {/* Logout */}
                   <button 
                     onClick={logout}
                     className="group flex items-center space-x-2 bg-red-500/90 hover:bg-red-500 
@@ -117,7 +113,7 @@ export default function Header() {
               ) : (
                 <div className="hidden md:flex items-center space-x-3">
                   <button 
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate('/')}
                     className="px-4 py-2 text-white/90 hover:text-white font-medium transition-colors duration-200"
                   >
                     Sign In
@@ -133,7 +129,7 @@ export default function Header() {
                 </div>
               )}
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu */}
               <button
                 onClick={toggleMenu}
                 className="md:hidden bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/20
@@ -149,7 +145,6 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Animated Bottom Border */}
         <div className="h-1 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 opacity-70"></div>
       </div>
 
@@ -159,8 +154,6 @@ export default function Header() {
       }`}>
         <div className="bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-2xl">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
-            
-            {/* Mobile Navigation */}
             <div className="space-y-2">
               {navItems.map((item) => {
                 const IconComponent = item.icon;
@@ -181,7 +174,6 @@ export default function Header() {
               })}
             </div>
 
-            {/* Conditional Mobile Content */}
             {token ? (
               <>
                 {/* Mobile User Info */}
@@ -199,7 +191,7 @@ export default function Header() {
                   </div>
                 </div>
 
-                {/* Mobile Logout Button */}
+                {/* Mobile Logout */}
                 <button 
                   onClick={logout}
                   className="w-full flex items-center justify-center space-x-2 
@@ -215,7 +207,7 @@ export default function Header() {
               <div className="space-y-3 pt-2 border-t border-gray-200">
                 <button 
                   onClick={() => {
-                    navigate('/login');
+                    navigate('/');
                     setIsMenuOpen(false);
                   }}
                   className="w-full py-3 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors duration-200"
@@ -239,7 +231,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Overlay for mobile menu */}
       {isMenuOpen && (
         <div 
           className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
